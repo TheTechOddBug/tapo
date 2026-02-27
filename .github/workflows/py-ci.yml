@@ -146,6 +146,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Sync dependencies (locked)
+        run: uv sync --locked --project tapo-py
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
@@ -153,8 +157,8 @@ jobs:
           args: --out dist --manifest-path ./tapo-py/Cargo.toml
       - name: Test sdist
         run: |
-          pip install --force-reinstall --verbose dist/*.tar.gz
-          python -c 'from tapo import ApiClient'
+          uv pip install --force-reinstall --no-deps --verbose dist/*.tar.gz
+          uv run --project tapo-py python -c 'from tapo import ApiClient'
       - name: Upload sdist
         uses: actions/upload-artifact@v7
         with:
