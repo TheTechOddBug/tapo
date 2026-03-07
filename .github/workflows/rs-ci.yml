@@ -16,11 +16,15 @@ jobs:
   checks:
     name: Rust checks
     runs-on: ubuntu-latest
+    env:
+      PYO3_PYTHON: python3
+      PYO3_PRINT_CONFIG: 1
     steps:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy, rustfmt
       - uses: davidB/rust-cargo-make@v1
+      - run: sudo apt-get install -y python3-dev
       - uses: actions/checkout@v6
       - name: Run format
         run: cargo make format
